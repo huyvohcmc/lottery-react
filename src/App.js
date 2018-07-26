@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './App.css';
 import web3 from './web3';
 import lottery from './lottery';
+import { etherToWei, weiToEther } from './utils';
 
 class App extends Component {
   state = {
@@ -14,10 +15,6 @@ class App extends Component {
 
   baseState = this.state;
 
-  getWinnerID = async () => await lottery.methods.winnerID().call();
-  amountToEnter = async () => await lottery.methods.amountToEnter().call();
-  getAccounts = async () => await web3.eth.getAccounts();
-
   async componentDidMount() {
     const manager = await lottery.methods.manager().call();
     const players = await lottery.methods.getPlayers().call();
@@ -25,10 +22,6 @@ class App extends Component {
 
     this.setState({ manager, players, balance });
   }
-
-  etherToWei = value => web3.utils.toWei(value, 'ether');
-
-  weiToEther = value => web3.utils.fromWei(value, 'ether');
 
   handleOnChangeEtherInput = value => {
     this.setState({ value });
@@ -43,11 +36,17 @@ class App extends Component {
       this.setState({ message: 'Please enter a correct amount of ether to enter' });
       return;
     }
+
+    if (weiToEther(await web3.eth.getBalance(accounts[0])) < 0.01) {
+      this.setState({ message: 'Not enough ether to join' });
+      return;
+    }
+
     this.setState({ message: 'Processing transaction...' });
 
     await lottery.methods.enter().send({
       from: accounts[0],
-      value: this.etherToWei(this.state.value),
+      value: etherToWei(this.state.value),
     });
 
     this.setState({
@@ -71,7 +70,7 @@ class App extends Component {
 
     this.setState({
       ...this.baseState,
-      message: `Player with ID #${this.weiToEther(await lottery.methods.winnerIndex().call())} has won ${total} ether!`,
+      message: `Player with ID #${await lottery.methods.winnerIndex().call()} has won ${weiToEther(total)} ether!`,
     });
   };
 
@@ -79,11 +78,20 @@ class App extends Component {
     return (
       <div>
         <h1>Lottery Contract</h1>
-        <h3>Download Chrome Extension MetaMask to use this app: <a href="https://metamask.io/">https://metamask.io</a></h3>
-        <p>Contract is managed by {this.state.manager}</p>
+        <h3>
+          Download browser extension <a href="https://github.com/MetaMask/metamask-extension">MetaMask</a> to use this app
+        </h3>
+        <div>
+          <p>The Rule Is Simple</p>
+          <ul>
+            <li>You enter the lottery round with 0.01 ether</li>
+            <li>The system will randomly chooses a player to be the winner</li>
+            <li>The winner wins the prize pool of that round</li>
+          </ul>
+        </div>
         <p>
-          There are totally {this.state.players.length} people entered, competing to win{' '}
-          {this.weiToEther(this.state.balance)} ethers.
+          Compete with {this.state.players.length} people to win{' '}
+          {weiToEther(this.state.balance)} ethers!
         </p>
         <form onSubmit={this.onSubmit}>
           <h3>Spend 0.01 ethers to enter the lottery</h3>
@@ -96,6 +104,7 @@ class App extends Component {
         <h3>Let's pick a winner!</h3>
         <button onClick={this.onClickPickWinner}>Pick a winner!</button>
         <h3>{this.state.message}</h3>
+        <p>Contract is managed by {this.state.manager}</p>
       </div>
     );
   }
