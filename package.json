@@ -6,6 +6,7 @@
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
     "react-scripts": "1.1.4",
+    "semantic-ui-css": "^2.3.3",
     "semantic-ui-react": "^0.82.1",
     "web3": "1.0.0-beta.26"
   },
@@ -15,7 +16,6 @@
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "prettier": "prettier --write src/**/*.js"
-
   },
   "devDependencies": {
     "prettier": "1.13.7"
