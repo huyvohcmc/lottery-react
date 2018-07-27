@@ -4,6 +4,8 @@ import web3 from './web3';
 import lottery from './lottery';
 import { etherToWei, weiToEther } from './utils';
 
+const AMOUNT_TO_ENTER = 0.01; // Should have retrieve this value from the lottery
+
 class App extends Component {
   state = {
     manager: '',
@@ -27,7 +29,7 @@ class App extends Component {
 
     const accounts = await web3.eth.getAccounts();
 
-    if (weiToEther(await web3.eth.getBalance(accounts[0])) < 0.01) {
+    if (weiToEther(await web3.eth.getBalance(accounts[0])) < AMOUNT_TO_ENTER) {
       this.setState({ message: 'Not enough ether to join' });
       return;
     }
@@ -36,7 +38,7 @@ class App extends Component {
 
     await lottery.methods.enter().send({
       from: accounts[0],
-      value: etherToWei('0.01'),
+      value: etherToWei(AMOUNT_TO_ENTER.toString()),
     });
 
     this.setState({
@@ -80,7 +82,7 @@ class App extends Component {
         <div>
           <p>The Rule Is Simple</p>
           <ul>
-            <li>You enter the lottery round with 0.01 ether</li>
+            <li>You enter the lottery round with {AMOUNT_TO_ENTER} ether</li>
             <li>The system will randomly chooses a player to be the winner</li>
             <li>The winner wins the prize pool of that round</li>
           </ul>
@@ -89,10 +91,10 @@ class App extends Component {
           Compete with {this.state.players.length} people to win {weiToEther(this.state.lotteryBalance)} ether!
         </p>
         <form onSubmit={this.onSubmit}>
-          <h3>Spend 0.01 ethers to enter the lottery</h3>
+          <h3>Spend {AMOUNT_TO_ENTER} ether to enter the lottery</h3>
           <button>Enter</button>
         </form>
-        <h3>Let's pick a winner!</h3>
+        <h3>Let&apos;s pick a winner!</h3>
         <button onClick={this.onClickPickWinner}>Pick a winner</button>
         <h3>{this.state.message}</h3>
         <p>Contract is managed by {this.state.manager}</p>
