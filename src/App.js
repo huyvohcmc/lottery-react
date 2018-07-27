@@ -7,6 +7,7 @@ import { etherToWei, weiToEther, formatAddress } from './utils';
 import Header from './Header';
 import { MessageProcessing, MessageStatusWrapper } from './Message';
 import StepGroup from './Step';
+import StatisticWrapper from './StatisticWrapper';
 
 const AMOUNT_TO_ENTER = 0.01; // Should have retrieve this value from the lottery
 
@@ -139,9 +140,7 @@ class App extends Component {
           <p>The Rule Is Simple</p>
           <StepGroup amountToEnter={AMOUNT_TO_ENTER} />
         </div>
-        <p>
-          Compete with {this.state.players.length} people to win {weiToEther(this.state.lotteryBalance)} ether!
-        </p>
+        <StatisticWrapper players={this.state.players.length} prizePool={weiToEther(this.state.lotteryBalance)} />
         <h3>Spend {AMOUNT_TO_ENTER} ether to enter the lottery</h3>
         <div>
           <Button primary content="Enter Lottery" icon="add circle" onClick={this.open} />
