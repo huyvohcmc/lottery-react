@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import { Container, Button, Divider } from 'semantic-ui-react';
+import { Container, Button, Divider, Confirm } from 'semantic-ui-react';
 import './App.css';
 import web3 from './web3';
 import lottery from './lottery';
 import { etherToWei, weiToEther, formatAddress } from './utils';
 import Header from './Header';
 import { MessageProcessing, MessageStatusWrapper } from './Message';
+import StepGroup from './Step';
 
 const AMOUNT_TO_ENTER = 0.01; // Should have retrieve this value from the lottery
 
@@ -15,6 +16,7 @@ class App extends Component {
     players: [],
     lotteryBalance: '',
     message: {},
+    open: false,
   };
 
   baseState = this.state;
@@ -44,6 +46,7 @@ class App extends Component {
     }
 
     this.setState({
+      open: false,
       message: {
         header: 'Just a few seconds',
         content: 'We are processing your transaction...',
@@ -115,24 +118,30 @@ class App extends Component {
     return null;
   };
 
+  open = () => this.setState({ open: true });
+
+  close = () => this.setState({ open: false });
+
   render() {
     return (
       <Container>
         <Header />
         <div>
           <p>The Rule Is Simple</p>
-          <ul>
-            <li>You enter the lottery round with {AMOUNT_TO_ENTER} ether</li>
-            <li>The system will randomly chooses a player to be the winner</li>
-            <li>The winner wins the prize pool of that round</li>
-          </ul>
+          <StepGroup amountToEnter={AMOUNT_TO_ENTER} />
         </div>
         <p>
           Compete with {this.state.players.length} people to win {weiToEther(this.state.lotteryBalance)} ether!
         </p>
         <h3>Spend {AMOUNT_TO_ENTER} ether to enter the lottery</h3>
         <div>
-          <Button primary content="Enter Lottery" icon="add circle" onClick={this.onEnterContract} />
+          <Button primary content="Enter Lottery" icon="add circle" onClick={this.open} />
+          <Confirm
+            open={this.state.open}
+            content={`You will give the lottery ${AMOUNT_TO_ENTER} ether to enter.`}
+            onCancel={this.close}
+            onConfirm={this.onEnterContract}
+          />
           <Button secondary content="Pick a Winner" icon="ethereum" onClick={this.onClickPickWinner} />
         </div>
         {this.renderMessage(this.state.message)}
