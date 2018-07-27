@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import './App.css';
 import web3 from './web3';
 import lottery from './lottery';
-import { etherToWei, weiToEther } from './utils';
+import { etherToWei, weiToEther, formatAddress } from './utils';
 
 const AMOUNT_TO_ENTER = 0.01; // Should have retrieve this value from the lottery
 
@@ -97,7 +97,7 @@ class App extends Component {
         <h3>Let&apos;s pick a winner!</h3>
         <button onClick={this.onClickPickWinner}>Pick a winner</button>
         <h3>{this.state.message}</h3>
-        <p>Contract is managed by {this.state.manager}</p>
+        <p>Contract is managed by {formatAddress(this.state.manager)}</p>
       </div>
     );
   }
