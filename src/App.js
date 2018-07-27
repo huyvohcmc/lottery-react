@@ -32,6 +32,8 @@ class App extends Component {
   onEnterContract = async event => {
     event.preventDefault();
 
+    this.setState({ open: false });
+
     const accounts = await web3.eth.getAccounts();
 
     if (weiToEther(await web3.eth.getBalance(accounts[0])) < AMOUNT_TO_ENTER) {
@@ -46,28 +48,32 @@ class App extends Component {
     }
 
     this.setState({
-      open: false,
       message: {
         header: 'Just a few seconds',
         content: 'We are processing your transaction...',
       },
     });
 
-    await lottery.methods.enter().send({
-      from: accounts[0],
-      value: etherToWei(AMOUNT_TO_ENTER.toString()),
-    });
+    try {
+      await lottery.methods.enter().send({
+        from: accounts[0],
+        value: etherToWei(AMOUNT_TO_ENTER.toString()),
+      });
 
-    this.setState({
-      manager: await lottery.methods.manager().call(),
-      players: await lottery.methods.getPlayers().call(),
-      lotteryBalance: await web3.eth.getBalance(lottery.options.address),
-      message: {
-        status: 'positive',
-        header: 'You have been entered to the lottery!',
-        content: `Your ID is ${this.state.players.length}.`,
-      },
-    });
+      this.setState({
+        manager: await lottery.methods.manager().call(),
+        players: await lottery.methods.getPlayers().call(),
+        lotteryBalance: await web3.eth.getBalance(lottery.options.address),
+        message: {
+          status: 'positive',
+          header: 'You have been entered to the lottery!',
+          content: `Your ID is ${this.state.players.length}.`,
+        },
+      });
+    } catch (error) {
+      this.setState({ message: {} });
+      console.log(error.message);
+    }
   };
 
   onClickPickWinner = async () => {
@@ -93,20 +99,23 @@ class App extends Component {
       },
     });
 
-    await lottery.methods.pickWinner().send({
-      from: accounts[0],
-    });
+    try {
+      await lottery.methods.pickWinner().send({
+        from: accounts[0],
+      });
 
-    this.setState({
-      ...this.baseState,
-      message: {
-        status: 'positive',
-        header: 'We have found a winner!',
-        content: `Player with ID #${await lottery.methods.winnerIndex().call()} has won ${weiToEther(
-          prizePool,
-        )} ether.`,
-      },
-    });
+      this.setState({
+        ...this.baseState,
+        message: {
+          status: 'positive',
+          header: `Player #${await lottery.methods.winnerIndex().call()} has won ${weiToEther(prizePool)} ether!`,
+          content: `Please check your wallet, ${formatAddress(await lottery.methods.winner().call())}.`,
+        },
+      });
+    } catch (error) {
+      this.setState({ message: {} });
+      console.log(error.message);
+    }
   };
 
   isEmpty = obj => Object.keys(obj).length === 0;
