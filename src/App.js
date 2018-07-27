@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
+import { Container, Button, Divider } from 'semantic-ui-react';
 import './App.css';
 import web3 from './web3';
 import lottery from './lottery';
 import { etherToWei, weiToEther, formatAddress } from './utils';
+import Header from './Header';
+import { MessageProcessing, MessageStatusWrapper } from './Message';
 
 const AMOUNT_TO_ENTER = 0.01; // Should have retrieve this value from the lottery
 
@@ -11,7 +14,7 @@ class App extends Component {
     manager: '',
     players: [],
     lotteryBalance: '',
-    message: '',
+    message: {},
   };
 
   baseState = this.state;
@@ -24,17 +27,28 @@ class App extends Component {
     this.setState({ manager, players, lotteryBalance });
   }
 
-  onSubmit = async event => {
+  onEnterContract = async event => {
     event.preventDefault();
 
     const accounts = await web3.eth.getAccounts();
 
     if (weiToEther(await web3.eth.getBalance(accounts[0])) < AMOUNT_TO_ENTER) {
-      this.setState({ message: 'Not enough ether to join' });
+      this.setState({
+        message: {
+          status: 'negative',
+          header: 'Transaction rejected',
+          content: 'You do not have enough ether to join. Please buy some ether to use this app.',
+        },
+      });
       return;
     }
 
-    this.setState({ message: 'Processing transaction...' });
+    this.setState({
+      message: {
+        header: 'Just a few seconds',
+        content: 'We are processing your transaction...',
+      },
+    });
 
     await lottery.methods.enter().send({
       from: accounts[0],
@@ -45,7 +59,11 @@ class App extends Component {
       manager: await lottery.methods.manager().call(),
       players: await lottery.methods.getPlayers().call(),
       lotteryBalance: await web3.eth.getBalance(lottery.options.address),
-      message: `You have been entered to the lottery! Your ID is ${this.state.players.length}.`,
+      message: {
+        status: 'positive',
+        header: 'You have been entered to the lottery!',
+        content: `Your ID is ${this.state.players.length}.`,
+      },
     });
   };
 
@@ -53,13 +71,24 @@ class App extends Component {
     const accounts = await web3.eth.getAccounts();
 
     if (accounts[0] !== this.state.manager) {
-      this.setState({ message: 'You are not authorized to perform this operation' });
+      this.setState({
+        message: {
+          status: 'warning',
+          header: 'Transaction rejected',
+          content: 'You are not authorized to perfom this transaction.',
+        },
+      });
       return;
     }
 
     const prizePool = this.state.lotteryBalance;
 
-    this.setState({ message: 'Processing transaction...' });
+    this.setState({
+      message: {
+        header: 'Just a few seconds',
+        content: 'We are processing your transaction...',
+      },
+    });
 
     await lottery.methods.pickWinner().send({
       from: accounts[0],
@@ -67,18 +96,29 @@ class App extends Component {
 
     this.setState({
       ...this.baseState,
-      message: `Player with ID #${await lottery.methods.winnerIndex().call()} has won ${weiToEther(prizePool)} ether!`,
+      message: {
+        status: 'positive',
+        header: 'We have found a winner!',
+        content: `Player with ID #${await lottery.methods.winnerIndex().call()} has won ${weiToEther(
+          prizePool,
+        )} ether.`,
+      },
     });
+  };
+
+  isEmpty = obj => Object.keys(obj).length === 0;
+
+  renderMessage = message => {
+    if (!this.isEmpty(message)) {
+      return message.status ? <MessageStatusWrapper {...message} /> : <MessageProcessing {...message} />;
+    }
+    return null;
   };
 
   render() {
     return (
-      <div>
-        <h1>Lottery Contract</h1>
-        <h3>
-          Download browser extension <a href="https://github.com/MetaMask/metamask-extension">MetaMask</a> to use this
-          app
-        </h3>
+      <Container>
+        <Header />
         <div>
           <p>The Rule Is Simple</p>
           <ul>
@@ -90,13 +130,13 @@ class App extends Component {
         <p>
           Compete with {this.state.players.length} people to win {weiToEther(this.state.lotteryBalance)} ether!
         </p>
-        <form onSubmit={this.onSubmit}>
-          <h3>Spend {AMOUNT_TO_ENTER} ether to enter the lottery</h3>
-          <button>Enter</button>
-        </form>
-        <h3>Let&apos;s pick a winner!</h3>
-        <button onClick={this.onClickPickWinner}>Pick a winner</button>
-        <h3>{this.state.message}</h3>
+        <h3>Spend {AMOUNT_TO_ENTER} ether to enter the lottery</h3>
+        <div>
+          <Button primary content="Enter Lottery" icon="add circle" onClick={this.onEnterContract} />
+          <Button secondary content="Pick a Winner" icon="ethereum" onClick={this.onClickPickWinner} />
+        </div>
+        {this.renderMessage(this.state.message)}
+        <Divider />
         <p>
           Click here to view{' '}
           <a
@@ -107,7 +147,7 @@ class App extends Component {
           </a>
         </p>
         <p>Contract is managed by {formatAddress(this.state.manager)}</p>
-      </div>
+      </Container>
     );
   }
 }
