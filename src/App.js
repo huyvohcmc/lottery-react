@@ -97,6 +97,15 @@ class App extends Component {
         <h3>Let&apos;s pick a winner!</h3>
         <button onClick={this.onClickPickWinner}>Pick a winner</button>
         <h3>{this.state.message}</h3>
+        <p>
+          Click here to view{' '}
+          <a
+            target="_blank"
+            rel="noopener noreferrer"
+            href="https://rinkeby.etherscan.io/address/0x2502FA8f3e8d258cb64CD9eb48230F24C5822a0c">
+            lottery contract's details
+          </a>
+        </p>
         <p>Contract is managed by {formatAddress(this.state.manager)}</p>
       </div>
     );
