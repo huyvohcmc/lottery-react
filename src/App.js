@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import { Container, Button, Divider, Confirm } from 'semantic-ui-react';
+import { Container, Header, Button, Divider, Confirm, Icon } from 'semantic-ui-react';
 import './App.css';
 import web3 from './web3';
 import lottery from './lottery';
 import { etherToWei, weiToEther, formatAddress } from './utils';
-import Header from './Header';
+// import Header from './Header';
 import { MessageProcessing, MessageStatusWrapper } from './Message';
 import StepGroup from './Step';
 import StatisticWrapper from './StatisticWrapper';
@@ -132,18 +132,49 @@ class App extends Component {
 
   close = () => this.setState({ open: false });
 
+  style = {
+    h1: {
+      marginTop: '1em',
+    },
+    h3: {
+      margin: '1em 0em 2em',
+    },
+    enterButton: {
+      marginRight: 20,
+    },
+  };
+
   render() {
     return (
       <Container>
-        <Header />
-        <div>
-          <p>The Rule Is Simple</p>
-          <StepGroup amountToEnter={AMOUNT_TO_ENTER} />
-        </div>
+        <Header as="h1" content="LOTTERY CONTRACT" style={this.style.h1} />
+        <Header
+          as="h3"
+          content={
+            <p>
+              * Download browser extension{' '}
+              <a target="_blank" rel="noopener noreferrer" href="https://github.com/MetaMask/metamask-extension">
+                Metamask
+              </a>{' '}
+              to use this app
+            </p>
+          }
+          style={this.style.h3}
+        />
+        <Divider />
+        <Header as="h3" content="The Rule Is Simple:" />
+        <StepGroup amountToEnter={AMOUNT_TO_ENTER} />
         <StatisticWrapper players={this.state.players.length} prizePool={weiToEther(this.state.lotteryBalance)} />
-        <h3>Spend {AMOUNT_TO_ENTER} ether to enter the lottery</h3>
+        <Divider />
+        <Header as="h3" content={<p>Spend {AMOUNT_TO_ENTER} ether to enter the lottery</p>} style={this.style.h3} />
         <div>
-          <Button primary content="Enter Lottery" icon="add circle" onClick={this.open} />
+          <Button
+            primary
+            content="Enter Lottery"
+            icon="add circle"
+            onClick={this.open}
+            style={this.style.enterButton}
+          />
           <Confirm
             open={this.state.open}
             content={`You will give the lottery ${AMOUNT_TO_ENTER} ether to enter.`}
@@ -155,15 +186,22 @@ class App extends Component {
         {this.renderMessage(this.state.message)}
         <Divider />
         <p>
-          Click here to view{' '}
+          View{' '}
           <a
             target="_blank"
             rel="noopener noreferrer"
             href="https://rinkeby.etherscan.io/address/0x2502FA8f3e8d258cb64CD9eb48230F24C5822a0c">
-            lottery contract's details
-          </a>
+            Lottery Contract's Details
+          </a>{' '}
+          on Rinkeby Etherscan
         </p>
         <p>Contract is managed by {formatAddress(this.state.manager)}</p>
+        <p>
+          <Icon name="github" />
+          <a href="https://github.com/huyvohcmc/lottery-react" target="_blank" rel="noopener noreferrer">
+            View Source
+          </a>
+        </p>
       </Container>
     );
   }
