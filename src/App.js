@@ -2,11 +2,11 @@ import React, { Component } from 'react';
 import { Container, Header, Button, Divider, Confirm } from 'semantic-ui-react';
 import web3 from './web3';
 import lottery from './lottery';
-import StepGroup from './StepGroup';
-import StatisticWrapper from './StatisticWrapper';
-import HeaderWrapper from './HeaderWrapper';
-import Footer from './Footer';
-import { MessageProcessing, MessageStatusWrapper } from './Message';
+import StepGroup from './components/StepGroup';
+import StatisticWrapper from './components/StatisticWrapper';
+import HeaderWrapper from './components/HeaderWrapper';
+import Footer from './components/Footer';
+import { MessageProcessing, MessageStatusWrapper } from './components/Message';
 import { etherToWei, weiToEther, formatAddress, isEmpty } from './utils';
 
 const AMOUNT_TO_ENTER = 0.01; // Should have retrieve this value from the lottery
