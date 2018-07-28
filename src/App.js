@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
-import { Container, Header, Button, Divider, Confirm, Icon } from 'semantic-ui-react';
-import './App.css';
+import { Container, Header, Button, Divider, Confirm } from 'semantic-ui-react';
 import web3 from './web3';
 import lottery from './lottery';
-import { etherToWei, weiToEther, formatAddress } from './utils';
-// import Header from './Header';
-import { MessageProcessing, MessageStatusWrapper } from './Message';
-import StepGroup from './Step';
+import StepGroup from './StepGroup';
 import StatisticWrapper from './StatisticWrapper';
+import HeaderWrapper from './HeaderWrapper';
+import Footer from './Footer';
+import { MessageProcessing, MessageStatusWrapper } from './Message';
+import { etherToWei, weiToEther, formatAddress, isEmpty } from './utils';
 
 const AMOUNT_TO_ENTER = 0.01; // Should have retrieve this value from the lottery
 
@@ -119,10 +119,8 @@ class App extends Component {
     }
   };
 
-  isEmpty = obj => Object.keys(obj).length === 0;
-
   renderMessage = message => {
-    if (!this.isEmpty(message)) {
+    if (!isEmpty(message)) {
       return message.status ? <MessageStatusWrapper {...message} /> : <MessageProcessing {...message} />;
     }
     return null;
@@ -132,49 +130,22 @@ class App extends Component {
 
   close = () => this.setState({ open: false });
 
-  style = {
-    h1: {
-      marginTop: '1em',
-    },
-    h3: {
-      margin: '1em 0em 2em',
-    },
-    enterButton: {
-      marginRight: 20,
-    },
-  };
-
   render() {
     return (
       <Container>
-        <Header as="h1" content="LOTTERY CONTRACT" style={this.style.h1} />
-        <Header
-          as="h3"
-          content={
-            <p>
-              * Download browser extension{' '}
-              <a target="_blank" rel="noopener noreferrer" href="https://github.com/MetaMask/metamask-extension">
-                Metamask
-              </a>{' '}
-              to use this app
-            </p>
-          }
-          style={this.style.h3}
-        />
+        <HeaderWrapper />
         <Divider />
         <Header as="h3" content="The Rule Is Simple:" />
         <StepGroup amountToEnter={AMOUNT_TO_ENTER} />
         <StatisticWrapper players={this.state.players.length} prizePool={weiToEther(this.state.lotteryBalance)} />
         <Divider />
-        <Header as="h3" content={<p>Spend {AMOUNT_TO_ENTER} ether to enter the lottery</p>} style={this.style.h3} />
-        <div>
-          <Button
-            primary
-            content="Enter Lottery"
-            icon="add circle"
-            onClick={this.open}
-            style={this.style.enterButton}
+        <div style={{ margin: '2em 0em' }}>
+          <Header
+            as="h3"
+            content={<p>Spend {AMOUNT_TO_ENTER} ether to enter the lottery</p>}
+            style={{ margin: '1em 0em' }}
           />
+          <Button primary content="Enter Lottery" icon="add circle" onClick={this.open} style={{ marginRight: 15 }} />
           <Confirm
             open={this.state.open}
             content={`You will give the lottery ${AMOUNT_TO_ENTER} ether to enter.`}
@@ -182,26 +153,10 @@ class App extends Component {
             onConfirm={this.onEnterContract}
           />
           <Button secondary content="Pick a Winner" icon="ethereum" onClick={this.onClickPickWinner} />
+          {this.renderMessage(this.state.message)}
         </div>
-        {this.renderMessage(this.state.message)}
         <Divider />
-        <p>
-          View{' '}
-          <a
-            target="_blank"
-            rel="noopener noreferrer"
-            href="https://rinkeby.etherscan.io/address/0x2502FA8f3e8d258cb64CD9eb48230F24C5822a0c">
-            Lottery Contract's Details
-          </a>{' '}
-          on Rinkeby Etherscan
-        </p>
-        <p>Contract is managed by {formatAddress(this.state.manager)}</p>
-        <p>
-          <Icon name="github" />
-          <a href="https://github.com/huyvohcmc/lottery-react" target="_blank" rel="noopener noreferrer">
-            View Source
-          </a>
-        </p>
+        <Footer style={{ margin: '2em 0em' }} managerAddress={formatAddress(this.state.manager)} />
       </Container>
     );
   }
