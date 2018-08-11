@@ -31,8 +31,6 @@ class App extends Component {
   }
 
   onEnterContract = async event => {
-    event.preventDefault();
-
     this.setState({ open: false });
 
     const accounts = await web3.eth.getAccounts();
@@ -62,7 +60,6 @@ class App extends Component {
       });
 
       this.setState({
-        manager: await lottery.methods.manager().call(),
         players: await lottery.methods.getPlayers().call(),
         lotteryBalance: await web3.eth.getBalance(lottery.options.address),
         message: {
@@ -135,7 +132,7 @@ class App extends Component {
       <Container>
         <HeaderWrapper />
         <Divider />
-        <Header as="h3" content="The Rule Is Simple:" />
+        <Header as="h3" style={{ margin: '1em 0em' }} content="The Rule Is Simple:" />
         <StepGroup amountToEnter={AMOUNT_TO_ENTER} />
         <StatisticWrapper players={this.state.players.length} prizePool={weiToEther(this.state.lotteryBalance)} />
         <Divider />
