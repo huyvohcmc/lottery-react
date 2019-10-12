@@ -17,7 +17,7 @@ class App extends Component {
     players: [],
     lotteryBalance: '',
     message: {},
-    open: false,
+    open: false
   };
 
   baseState = this.state;
@@ -41,8 +41,8 @@ class App extends Component {
           status: 'negative',
           header: 'Transaction rejected',
           content:
-            'You do not have enough ether to join. Please buy some ether to use this app.',
-        },
+            'You do not have enough ether to join. Please buy some ether to use this app.'
+        }
       });
       return;
     }
@@ -50,14 +50,14 @@ class App extends Component {
     this.setState({
       message: {
         header: 'Just a few seconds',
-        content: 'We are processing your transaction...',
-      },
+        content: 'We are processing your transaction...'
+      }
     });
 
     try {
       await lottery.methods.enter().send({
         from: accounts[0],
-        value: etherToWei(AMOUNT_TO_ENTER.toString()),
+        value: etherToWei(AMOUNT_TO_ENTER.toString())
       });
 
       this.setState({
@@ -66,8 +66,8 @@ class App extends Component {
         message: {
           status: 'positive',
           header: 'You have been entered to the lottery!',
-          content: `Your ID is ${this.state.players.length}.`,
-        },
+          content: `Your ID is ${this.state.players.length}.`
+        }
       });
     } catch (error) {
       this.setState({ message: {} });
@@ -83,8 +83,8 @@ class App extends Component {
         message: {
           status: 'warning',
           header: 'Transaction rejected',
-          content: 'You are not authorized to perfom this transaction.',
-        },
+          content: 'You are not authorized to perfom this transaction.'
+        }
       });
       return;
     }
@@ -94,13 +94,13 @@ class App extends Component {
     this.setState({
       message: {
         header: 'Just a few seconds',
-        content: 'We are processing your transaction...',
-      },
+        content: 'We are processing your transaction...'
+      }
     });
 
     try {
       await lottery.methods.pickWinner().send({
-        from: accounts[0],
+        from: accounts[0]
       });
 
       this.setState({
@@ -111,9 +111,9 @@ class App extends Component {
             .winnerIndex()
             .call()} has won ${weiToEther(prizePool)} ether!`,
           content: `Please check your wallet, ${formatAddress(
-            await lottery.methods.winner().call(),
-          )}.`,
-        },
+            await lottery.methods.winner().call()
+          )}.`
+        }
       });
     } catch (error) {
       this.setState({ message: {} });

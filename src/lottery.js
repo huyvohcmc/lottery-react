@@ -10,7 +10,7 @@ const abi = [
     outputs: [{ name: '', type: 'address' }],
     payable: false,
     stateMutability: 'view',
-    type: 'function',
+    type: 'function'
   },
   {
     constant: true,
@@ -19,7 +19,7 @@ const abi = [
     outputs: [{ name: '', type: 'uint256' }],
     payable: false,
     stateMutability: 'view',
-    type: 'function',
+    type: 'function'
   },
   {
     constant: false,
@@ -28,7 +28,7 @@ const abi = [
     outputs: [],
     payable: false,
     stateMutability: 'nonpayable',
-    type: 'function',
+    type: 'function'
   },
   {
     constant: true,
@@ -37,7 +37,7 @@ const abi = [
     outputs: [{ name: '', type: 'address[]' }],
     payable: false,
     stateMutability: 'view',
-    type: 'function',
+    type: 'function'
   },
   {
     constant: true,
@@ -46,7 +46,7 @@ const abi = [
     outputs: [{ name: '', type: 'address' }],
     payable: false,
     stateMutability: 'view',
-    type: 'function',
+    type: 'function'
   },
   {
     constant: true,
@@ -55,7 +55,7 @@ const abi = [
     outputs: [{ name: '', type: 'uint256' }],
     payable: false,
     stateMutability: 'view',
-    type: 'function',
+    type: 'function'
   },
   {
     constant: true,
@@ -64,7 +64,7 @@ const abi = [
     outputs: [{ name: '', type: 'address' }],
     payable: false,
     stateMutability: 'view',
-    type: 'function',
+    type: 'function'
   },
   {
     constant: false,
@@ -73,7 +73,7 @@ const abi = [
     outputs: [],
     payable: true,
     stateMutability: 'payable',
-    type: 'function',
+    type: 'function'
   },
   {
     constant: true,
@@ -82,9 +82,14 @@ const abi = [
     outputs: [{ name: '', type: 'address' }],
     payable: false,
     stateMutability: 'view',
-    type: 'function',
+    type: 'function'
   },
-  { inputs: [], payable: false, stateMutability: 'nonpayable', type: 'constructor' },
+  {
+    inputs: [],
+    payable: false,
+    stateMutability: 'nonpayable',
+    type: 'constructor'
+  }
 ];
 
 export default new web3.eth.Contract(abi, address);
