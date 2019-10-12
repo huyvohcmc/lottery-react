@@ -40,7 +40,8 @@ class App extends Component {
         message: {
           status: 'negative',
           header: 'Transaction rejected',
-          content: 'You do not have enough ether to join. Please buy some ether to use this app.',
+          content:
+            'You do not have enough ether to join. Please buy some ether to use this app.',
         },
       });
       return;
@@ -106,8 +107,12 @@ class App extends Component {
         ...this.baseState,
         message: {
           status: 'positive',
-          header: `Player #${await lottery.methods.winnerIndex().call()} has won ${weiToEther(prizePool)} ether!`,
-          content: `Please check your wallet, ${formatAddress(await lottery.methods.winner().call())}.`,
+          header: `Player #${await lottery.methods
+            .winnerIndex()
+            .call()} has won ${weiToEther(prizePool)} ether!`,
+          content: `Please check your wallet, ${formatAddress(
+            await lottery.methods.winner().call(),
+          )}.`,
         },
       });
     } catch (error) {
@@ -118,7 +123,11 @@ class App extends Component {
 
   renderMessage = message => {
     if (!isEmpty(message)) {
-      return message.status ? <MessageStatusWrapper {...message} /> : <MessageProcessing {...message} />;
+      return message.status ? (
+        <MessageStatusWrapper {...message} />
+      ) : (
+        <MessageProcessing {...message} />
+      );
     }
     return null;
   };
@@ -132,9 +141,16 @@ class App extends Component {
       <Container>
         <HeaderWrapper />
         <Divider />
-        <Header as="h3" style={{ margin: '1em 0em' }} content="The Rule Is Simple:" />
+        <Header
+          as="h3"
+          style={{ margin: '1em 0em' }}
+          content="The Rule Is Simple:"
+        />
         <StepGroup amountToEnter={AMOUNT_TO_ENTER} />
-        <StatisticWrapper players={this.state.players.length} prizePool={weiToEther(this.state.lotteryBalance)} />
+        <StatisticWrapper
+          players={this.state.players.length}
+          prizePool={weiToEther(this.state.lotteryBalance)}
+        />
         <Divider />
         <div style={{ margin: '2em 0em' }}>
           <Header
@@ -142,18 +158,32 @@ class App extends Component {
             content={<p>Spend {AMOUNT_TO_ENTER} ether to enter the lottery</p>}
             style={{ margin: '1em 0em' }}
           />
-          <Button primary content="Enter Lottery" icon="add circle" onClick={this.open} style={{ marginRight: 15 }} />
+          <Button
+            primary
+            content="Enter Lottery"
+            icon="add circle"
+            onClick={this.open}
+            style={{ marginRight: 15 }}
+          />
           <Confirm
             open={this.state.open}
             content={`You will give the lottery ${AMOUNT_TO_ENTER} ether to enter.`}
             onCancel={this.close}
             onConfirm={this.onEnterContract}
           />
-          <Button secondary content="Pick a Winner" icon="ethereum" onClick={this.onClickPickWinner} />
+          <Button
+            secondary
+            content="Pick a Winner"
+            icon="ethereum"
+            onClick={this.onClickPickWinner}
+          />
           {this.renderMessage(this.state.message)}
         </div>
         <Divider />
-        <Footer style={{ margin: '2em 0em' }} managerAddress={formatAddress(this.state.manager)} />
+        <Footer
+          style={{ margin: '2em 0em' }}
+          managerAddress={formatAddress(this.state.manager)}
+        />
       </Container>
     );
   }
