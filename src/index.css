@@ -1,5 +1,14 @@
 body {
   margin: 0;
   padding: 0;
-  font-family: sans-serif;
+  font-family: 'Roboto', sans-serif;
+  background: #eee;
+  color: #222;
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background: #333 !important;
+    color: #ddd !important;
+  }
 }
