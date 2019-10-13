@@ -7,7 +7,9 @@ const StepGroup = ({ amountToEnter }) => (
       <Icon name="user plus" />
       <Step.Content>
         <Step.Title>Enter</Step.Title>
-        <Step.Description>Spend {amountToEnter} ether to enter the lottery</Step.Description>
+        <Step.Description>
+          Spend {amountToEnter} ether to enter the lottery
+        </Step.Description>
       </Step.Content>
     </Step>
     <Step>
@@ -21,7 +23,9 @@ const StepGroup = ({ amountToEnter }) => (
       <Icon name="ethereum" />
       <Step.Content>
         <Step.Title>Prize Pool</Step.Title>
-        <Step.Description>The winner wins all ethers of that round</Step.Description>
+        <Step.Description>
+          The winner wins all ethers of that round
+        </Step.Description>
       </Step.Content>
     </Step>
   </Step.Group>

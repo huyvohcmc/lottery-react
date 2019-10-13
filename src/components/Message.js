@@ -12,7 +12,11 @@ export const MessageProcessing = ({ header, content }) => (
 );
 
 export const MessageStatusWrapper = ({ status, header, content }) => (
-  <Message positive={status === 'positive'} warning={status === 'warning'} negative={status === 'negative'}>
+  <Message
+    positive={status === 'positive'}
+    warning={status === 'warning'}
+    negative={status === 'negative'}
+  >
     <Message.Header>{header}</Message.Header>
     <p>{content}</p>
   </Message>

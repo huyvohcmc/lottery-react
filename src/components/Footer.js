@@ -8,7 +8,8 @@ const Footer = ({ style, managerAddress }) => (
       <a
         target="_blank"
         rel="noopener noreferrer"
-        href="https://rinkeby.etherscan.io/address/0x2502FA8f3e8d258cb64CD9eb48230F24C5822a0c">
+        href="https://rinkeby.etherscan.io/address/0x2502FA8f3e8d258cb64CD9eb48230F24C5822a0c"
+      >
         Lottery Contract's Details
       </a>{' '}
       on Rinkeby Etherscan
@@ -16,7 +17,11 @@ const Footer = ({ style, managerAddress }) => (
     <p>Contract is managed by {managerAddress}</p>
     <p>
       <Icon name="github" />
-      <a href="https://github.com/huyvohcmc/lottery-react" target="_blank" rel="noopener noreferrer">
+      <a
+        href="https://github.com/huyvohcmc/lottery-react"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
         View Source Code
       </a>
     </p>
